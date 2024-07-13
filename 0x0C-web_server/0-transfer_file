@@ -11,4 +11,4 @@ SERVER_IP="$2"
 USERNAME="$3"
 SSH_KEY_PATH="$4"
 
-scp -i "$SSH_KEY_PATH" -O StrictHostKeyChecking=no "$FILE_PATH" "$USERNAME@$SERVER_IP:~/"
+scp -o "$SSH_KEY_PATH" -i StrictHostKeyChecking=no "$FILE_PATH" "$USERNAME@$SERVER_IP:~/"

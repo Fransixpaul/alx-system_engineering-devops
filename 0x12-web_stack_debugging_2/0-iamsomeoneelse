@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# check if exactly one arg is provided and run the whami command
+
+
+if [ "$#" -ne 1 ]; then
+	echo "Usage: $0 <username>"
+	exit 1
+fi
+
+
+if [ "$#" = "whoami" ]; then
+	echo "root"
+else
+	sudo -u "$1" whoami
+fi

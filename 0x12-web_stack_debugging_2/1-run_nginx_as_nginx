@@ -2,7 +2,7 @@
 # Modify the Nginx configuration to run as the nginx user
 # Change the listening port to 8080
 
-if ! comman -v nginx > /dev/null; then
+if ! command -v nginx > /dev/null; then
 	apt-get update
 	apt-get install -y nginx
 fi
@@ -14,7 +14,7 @@ sed -i \
 /etc/nginx/sites-available/default
 
 sed -i \
-'s/listen \[::\]:80 default_server;/listen \[::\]8080 default_server;/' \
+'s/listen \[::\]:80 default_server;/listen \[::\]:8080 default_server;/' \
 /etc/nginx/sites-available/default
 
 
@@ -28,6 +28,6 @@ if ! id -u nginx > /dev/null 2>&1; then
 	nginx
 fi
 
-systemctl restart nginx
+sudo systemctl restart nginx
 
 pgrep -af nginx

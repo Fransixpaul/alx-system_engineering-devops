@@ -6,6 +6,7 @@ import requests
 
 REST_API = "https://jsonplaceholder.typicode.com"
 
+
 def gather_data():
     # Fetch all users and todos from the API
     users = requests.get(f'{REST_API}/users').json()
@@ -33,6 +34,7 @@ def gather_data():
 
     return data
 
+
 if __name__ == '__main__':
     # Gather all data
     data = gather_data()
@@ -40,4 +42,3 @@ if __name__ == '__main__':
     # Save the JSON data to a file named 'todo_all_employees.json'
     with open('todo_all_employees.json', 'w') as json_file:
         json.dump(data, json_file, indent=4)
-

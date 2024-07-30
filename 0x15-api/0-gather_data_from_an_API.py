@@ -1,54 +1,41 @@
 #!/usr/bin/python3
-"""Returns information about an employee's TODO list progress given an ID."""
+""" returns list info about the employee given an ID """
 import requests
 from sys import argv
+""" the request module used to fetch the url response"""
+
 
 def get_employee_todo_progress(employee_id):
-    """Fetch and display TODO list progress for an employee."""
+    """the employee to do progress function"""
     try:
         url = "https://jsonplaceholder.typicode.com/"
-        # Fetch user data
-        user_response = requests.get(url + f"users/{employee_id}")
-        user_response.raise_for_status()  # Raise an error for bad responses
-        user_data = user_response.json()
-        employee_name = user_data.get('name')
-        
-        if not employee_name:
-            print("Employee not found.")
-            return
-        
-        # Fetch TODO list data
-        todos_response = requests.get(url + f"todos?userId={employee_id}")
-        todos_response.raise_for_status()  # Raise an error for bad responses
-        todos_list = todos_response.json()
-        
-        # Calculate task completion
-        total_tasks = len(todos_list)
-        completed_tasks = [task for task in todos_list if task.get('completed')]
-        completed_count = len(completed_tasks)
-        
-        # Display results
-        print(f"Employee {employee_name} is done with tasks({completed_count}/{total_tasks}):")
-        for task in completed_tasks:
-            print(f"\t {task.get('title')}")
-    
-    except requests.RequestException as e:
-        print(f"An error occurred with the request: {e}")
-    except ValueError:
-        print("Failed to decode JSON from the response.")
-    except KeyError as e:
-        print(f"Missing expected data: {e}")
+        user_datas = requests.get(url + f"users/{employee_id}")
+        user_data = user_datas.json()
+        employee_name = user_data['name']
+
+        """now lets fetch the todos list for an employee
+        note that we use todos?<dic_key>=value"""
+        todos_list = requests.get(url + f"todos?userId={employee_id}")
+        json_todos_list = todos_list.json()
+
+        """calculate the task done and left todo"""
+        total_task = len(json_todos_list)
+        """check the completed task"""
+        task_done = [task for task in json_todos_list if task['completed']]
+        no_task_done = len(task_done)
+
+        """displaying result"""
+        print(f"Employee {employee_name} is done with tasks("
+              f"{no_task_done}/{total_task}):")
+        """printing the title of completed task"""
+        for task in task_done:
+            print(f"\t {task['title']}")
+    except Exception as e:
+        print(f"an error occured: {e}")
+
 
 if __name__ == "__main__":
     if len(argv) != 2:
-        print("Usage: script <employee_id>")
-        exit(1)
-    
-    try:
-        employee_id = int(argv[1])
-    except ValueError:
-        print("Employee ID must be an integer.")
-        exit(1)
-    
-    get_employee_todo_progress(employee_id)
-
+        print("Usage: script <emplyee_id>")
+    else:
+        get_employee_todo_progress(argv[1])

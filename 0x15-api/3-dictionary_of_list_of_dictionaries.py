@@ -1,35 +1,36 @@
 #!/usr/bin/python3
-"""python script to fetch Rest API for todo lists of employees"""
+'''
+Gather employee data from API and export it to JSON
+'''
 
 import json
 import requests
-import sys
 
+REST_API = "https://jsonplaceholder.typicode.com"
+
+def gather_data():
+    users_req = requests.get('{}/users'.format(REST_API)).json()
+    todos_req = requests.get('{}/todos'.format(REST_API)).json()
+
+    data = {}
+
+    for user in users_req:
+        user_id = user.get('id')
+        username = user.get('username')
+
+        tasks = [task for task in todos_req if task.get('userId') == user_id]
+        user_tasks = [{
+            "username": username,
+            "task": task.get('title'),
+            "completed": task.get('completed')
+        } for task in tasks]
+
+        data[user_id] = user_tasks
+
+    return data
 
 if __name__ == '__main__':
-    url = "https://jsonplaceholder.typicode.com/users"
+    data = gather_data()
 
-    resp = requests.get(url)
-    Users = resp.json()
-
-    users_dict = {}
-    for user in Users:
-        USER_ID = user.get('id')
-        USERNAME = user.get('username')
-        url = 'https://jsonplaceholder.typicode.com/users/{}'.format(USER_ID)
-        url = url + '/todos/'
-        resp = requests.get(url)
-
-        tasks = resp.json()
-        users_dict[USER_ID] = []
-        for task in tasks:
-            TASK_COMPLETED_STATUS = task.get('completed')
-            TASK_TITLE = task.get('title')
-            users_dict[USER_ID].append({
-                "task": TASK_TITLE,
-                "completed": TASK_COMPLETED_STATUS,
-                "username": USERNAME
-            })
-            """A little Something"""
-    with open('todo_all_employees.json', 'w') as f:
-        json.dump(users_dict, f)
+    with open('todo_all_employees.json', 'w') as json_file:
+        json.dump(data, json_file, indent=4)

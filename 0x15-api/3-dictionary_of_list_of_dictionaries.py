@@ -8,6 +8,7 @@ import requests
 
 REST_API = "https://jsonplaceholder.typicode.com"
 
+
 def gather_data():
     users_req = requests.get('{}/users'.format(REST_API)).json()
     todos_req = requests.get('{}/todos'.format(REST_API)).json()
@@ -30,6 +31,7 @@ def gather_data():
         data[user_id] = user_tasks
 
     return data
+
 
 if __name__ == '__main__':
     data = gather_data()
